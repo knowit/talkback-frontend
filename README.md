@@ -1,5 +1,5 @@
 # Talkback
-The frontend of the Talkback app, implemented in Elm!
+This is the frontend for the sli.do copy "Talkback"
 
 ## Prerequisites:
 - Node v6.0+ (required for elm-live)

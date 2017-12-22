@@ -1,0 +1,7 @@
+{
+  "name": "Scelmo",
+  "version": "1.0.0",
+  "dependencies": {
+    "bulma": "^0.6.1"
+  }
+}

@@ -8,4 +8,4 @@ repl-temp-*
 node_modules
 
 # dist
-build
+build/elm.js

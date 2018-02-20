@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Data.Message exposing (Message)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -10,12 +11,16 @@ import WebSocket
 
 
 type alias Model =
-    { roomId : String }
+    { roomId : String
+    , messages : List Message
+    }
 
 
 initialModel : Model
 initialModel =
-    { roomId = "" }
+    { roomId = ""
+    , messages = []
+    }
 
 
 init : ( Model, Cmd Msg )

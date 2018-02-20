@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Data.Message exposing (Message)
+import Data.Room exposing (Room)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -11,14 +12,14 @@ import WebSocket
 
 
 type alias Model =
-    { roomId : String
+    { current : Room
     , messages : List Message
     }
 
 
 initialModel : Model
 initialModel =
-    { roomId = ""
+    { current = { roomId = "", messages = [] }
     , messages = []
     }
 
@@ -43,7 +44,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         RoomIdOnChange roomId ->
-            ( { model | roomId = roomId }, Cmd.none )
+            let
+                oldCurrentRoom = model.current
+                newCurrentRoom =
+                    { oldCurrentRoom | roomId = roomId, messages = [] }
+            in
+                ( { model | current = newCurrentRoom }, Cmd.none )
 
         SubmitRoomId ->
             ( model, sendRoomId (getRoomId model) )
@@ -101,7 +107,7 @@ main =
 
 getRoomId : Model -> String
 getRoomId model =
-    model.roomId
+    model.current.roomId
 
 
 sendRoomId : String -> Cmd msg

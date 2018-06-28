@@ -1,7 +1,8 @@
 {
   "name": "Talkback",
   "version": "1.0.0",
+  "description": "Elm frontend with graphcool BaaS",
   "dependencies": {
-    "bulma": "^0.6.1"
+    "bulma": "0.7.0"
   }
 }

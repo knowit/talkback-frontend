@@ -45,7 +45,9 @@ update msg model =
     case msg of
         RoomIdOnChange roomId ->
             let
-                oldCurrentRoom = model.current
+                oldCurrentRoom =
+                    model.current
+
                 newCurrentRoom =
                     { oldCurrentRoom | roomId = roomId, messages = [] }
             in

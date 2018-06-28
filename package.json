@@ -1,5 +1,5 @@
 {
-  "name": "Talkback",
+  "name": "talkback",
   "version": "1.0.0",
   "description": "Elm frontend with graphcool BaaS",
   "dependencies": {

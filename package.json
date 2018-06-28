@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Elm frontend with graphcool BaaS",
   "dependencies": {
-    "bulma": "0.7.0"
+    "bulma": "0.7.0",
+    "elm-live": "^2.7.5"
+  },
+  "devDependencies": {
+    "elm-format": "^0.6.1-alpha"
   }
 }

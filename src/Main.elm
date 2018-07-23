@@ -1,7 +1,6 @@
 module Main exposing (..)
 
-import Data.Message exposing (Message)
-import Data.Room exposing (Room)
+import Data exposing (Room, Message, User)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -12,7 +11,7 @@ import WebSocket
 
 
 type alias Model =
-    { currentRoom : Room
+    { currentRoom : Maybe Room
     , inputId : String
     , messages : List Message
     }
@@ -20,7 +19,7 @@ type alias Model =
 
 initialModel : Model
 initialModel =
-    { currentRoom = { roomId = "", messages = [] }
+    { currentRoom = Nothing
     , inputId = ""
     , messages = []
     }
@@ -39,7 +38,7 @@ type Msg
     = NoOp
     | InputChange String
     | SubmitRoomId
-    | IncomingMessage Room
+    | IncomingMessage (Maybe Room)
     | ClearQuestion String
 
 
@@ -67,6 +66,25 @@ subscriptions model =
     WebSocket.listen "ws://echo.websocket.org" createDummyRoom
 
 
+
+---- VIEW ----
+
+
+view : Model -> Html Msg
+view model =
+    div [ class "section" ]
+        [ div [ class "container" ]
+            [ inputGroup model
+            , case model.currentRoom of
+                Just room ->
+                    viewRoom room
+
+                Nothing ->
+                    div [] []
+            ]
+        ]
+
+
 inputGroup : Model -> Html Msg
 inputGroup model =
     div [ class "field has-icons-left has-addons has-addons-centered" ]
@@ -79,6 +97,18 @@ inputGroup model =
         ]
 
 
+viewRoom : Room -> Html Msg
+viewRoom room =
+    p []
+        [ h1 [ class "title has-text-centered " ] [ text "Room: ", text room.id ]
+        , ul []
+            (List.map
+                message
+                room.messages
+            )
+        ]
+
+
 message : Message -> Html Msg
 message msg =
     li [ class "field" ]
@@ -86,7 +116,7 @@ message msg =
             [ div [ class "level-left" ]
                 [ div [ class "level-item" ]
                     [ div [ class "field" ]
-                        [ div [ class "subtitle is-5" ] [ text msg.author.username, text " - ", text (toString msg.score) ]
+                        [ div [ class "subtitle is-5" ] [ text msg.author.email, text " - ", text (toString msg.score) ]
                         , div [] [ text msg.text ]
                         ]
                     ]
@@ -96,32 +126,6 @@ message msg =
                     [ button [ class "button is-success", onClick (ClearQuestion msg.id) ] [ text "Done" ]
                     ]
                 ]
-            ]
-        ]
-
-
-room : Model -> Html Msg
-room model =
-    p []
-        [ h1 [ class "title has-text-centered " ] [ text "Room: ", text model.currentRoom.roomId ]
-        , ul []
-            (List.map
-                message
-                model.currentRoom.messages
-            )
-        ]
-
-
-
----- VIEW ----
-
-
-view : Model -> Html Msg
-view model =
-    div [ class "section" ]
-        [ div [ class "container" ]
-            [ inputGroup model
-            , room model
             ]
         ]
 
@@ -153,16 +157,31 @@ clearQuestion questionId =
 createDummyRoom : String -> Msg
 createDummyRoom roomId =
     IncomingMessage
-        { roomId = roomId
-        , messages = [ createDummyMessage, createDummyMessage ]
-        }
+        (Just
+            { id = roomId
+            , createdAt = 1532358334463
+            , updatedAt = 1532358334463
+            , messages = [ createDummyMessage, createDummyMessage ]
+            }
+        )
+
+
+createDummyUser : User
+createDummyUser =
+    { id = "user"
+    , createdAt = 1532358334463
+    , updatedAt = 1532358334463
+    , email = "user@user.com"
+    }
 
 
 createDummyMessage : Message
 createDummyMessage =
     { id = "id"
-    , author = { username = "DummyMan" }
+    , createdAt = 1532358334463
     , text = "DummyText"
+    , upvotes = 6
+    , downvotes = 5
+    , author = createDummyUser
     , score = 5
-    , timestamp = 1532358334463
     }

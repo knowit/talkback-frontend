@@ -12,14 +12,16 @@ import WebSocket
 
 
 type alias Model =
-    { current : Room
+    { currentRoom : Room
+    , inputId : String
     , messages : List Message
     }
 
 
 initialModel : Model
 initialModel =
-    { current = { roomId = "", messages = [] }
+    { currentRoom = { roomId = "", messages = [] }
+    , inputId = ""
     , messages = []
     }
 
@@ -35,30 +37,22 @@ init =
 
 type Msg
     = NoOp
-    | RoomIdOnChange String
+    | InputChange String
     | SubmitRoomId
-    | SubmitRoomIdResult String
+    | IncomingMessage Room
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        RoomIdOnChange roomId ->
-            let
-                oldCurrentRoom =
-                    model.current
-
-                newCurrentRoom =
-                    { oldCurrentRoom | roomId = roomId, messages = [] }
-            in
-                ( { model | current = newCurrentRoom }, Cmd.none )
+        InputChange roomId ->
+            ( { model | inputId = roomId }, Cmd.none )
 
         SubmitRoomId ->
-            ( model, sendRoomId (getRoomId model) )
+            ( model, sendRoomId model.inputId )
 
-        --- TODO: finish this!
-        SubmitRoomIdResult result ->
-            ( model, Cmd.none )
+        IncomingMessage result ->
+            ( { model | currentRoom = result }, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
@@ -66,7 +60,25 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    WebSocket.listen "ws://dummy.dumdum.org" SubmitRoomIdResult
+    WebSocket.listen "ws://echo.websocket.org" createDummyRoom
+
+
+inputGroup : Model -> Html Msg
+inputGroup model =
+    div [ class "field has-icons-left has-addons has-addons-centered" ]
+        [ p [ class "control" ]
+            [ button [ class "button is-warning is-static" ] [ text "#" ] ]
+        , p [ class "control" ]
+            [ input [ class "input", type_ "text", placeholder "Room ID", onInput InputChange ] [] ]
+        , p [ class "control" ]
+            [ button [ class "button is-info", onClick SubmitRoomId ] [ text "Join" ] ]
+        ]
+
+
+room : Model -> Html Msg
+room model =
+    div []
+        [ p [] [ text model.currentRoom.roomId ] ]
 
 
 
@@ -77,18 +89,8 @@ view : Model -> Html Msg
 view model =
     div [ class "section" ]
         [ div [ class "container" ]
-            [ div [ class "level" ]
-                [ div [ class "level-item" ]
-                    [ div [ class "field has-icons-left has-addons has-addons-centered" ]
-                        [ p [ class "control" ]
-                            [ button [ class "button is-warning is-static" ] [ text "#" ] ]
-                        , p [ class "control" ]
-                            [ input [ class "input", type_ "text", placeholder "Room ID", onInput RoomIdOnChange ] [] ]
-                        , p [ class "control" ]
-                            [ button [ class "button is-info", onClick SubmitRoomId ] [ text "Join" ] ]
-                        ]
-                    ]
-                ]
+            [ inputGroup model
+            , room model
             ]
         ]
 
@@ -107,11 +109,22 @@ main =
         }
 
 
-getRoomId : Model -> String
-getRoomId model =
-    model.current.roomId
-
-
 sendRoomId : String -> Cmd msg
 sendRoomId roomId =
-    WebSocket.send "ws://dummy.dumdum.org" roomId
+    WebSocket.send "ws://echo.websocket.org" roomId
+
+
+createDummyRoom : String -> Msg
+createDummyRoom roomId =
+    IncomingMessage
+        { roomId = roomId
+        , messages = [ createDummyMessage, createDummyMessage ]
+        }
+
+
+createDummyMessage : Message
+createDummyMessage =
+    { author = { username = "DummyMan" }
+    , text = "DummyText"
+    , timestamp = 1532358334463
+    }

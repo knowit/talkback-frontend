@@ -1,0 +1,55 @@
+# Queries
+query allRooms {
+  allRooms {
+    ...roomInfo
+    messages {
+      ...messageInfo
+      author {
+        ...userInfo
+      }
+    }
+  }
+}
+
+query room($id: ID!) {
+  Room(id: $id) {
+    ...roomInfo
+    messages {
+      ...messageInfo
+      author {
+        ...userInfo
+      }
+    }
+  }
+}
+
+query messagesForUser($userId: ID!) {
+  User(id: $userId) {
+    messages {
+      ...messageInfo
+    }
+  }
+}
+
+
+# Fragments
+fragment roomInfo on Room {
+  id
+  createdAt
+  updatedAt
+}
+
+fragment userInfo on User {
+  id
+  createdAt
+  updatedAt
+  email
+}
+
+fragment messageInfo on Message {
+  id
+  createdAt
+  text
+  upvotes
+  downvotes
+}

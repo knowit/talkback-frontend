@@ -1,0 +1,24 @@
+type Room @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  messages: [Message]! @relation(name: "MessagesOnRoom")
+}
+
+type User @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  email: String! @isUnique
+  messages: [Message]! @relation(name: "MessagesOnUser")
+}
+
+type Message @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  text: String!
+  upvotes: Int!
+  downvotes: Int!
+  author: User! @relation(name: "MessagesOnUser")
+  room: Room! @relation(name: "MessagesOnRoom")
+}

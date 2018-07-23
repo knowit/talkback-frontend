@@ -31,6 +31,15 @@ query messagesForUser($userId: ID!) {
   }
 }
 
+query message($messageId: ID!) {
+  Message(id: $messageId) {
+    ...messageInfo
+    author {
+      ...userInfo
+    }
+  }
+}
+
 
 # Fragments
 fragment roomInfo on Room {

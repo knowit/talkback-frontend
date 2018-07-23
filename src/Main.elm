@@ -40,6 +40,7 @@ type Msg
     | InputChange String
     | SubmitRoomId
     | IncomingMessage Room
+    | ClearQuestion String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -53,6 +54,9 @@ update msg model =
 
         IncomingMessage result ->
             ( { model | currentRoom = result }, Cmd.none )
+
+        ClearQuestion questionId ->
+            ( model, clearQuestion questionId )
 
         NoOp ->
             ( model, Cmd.none )
@@ -75,10 +79,37 @@ inputGroup model =
         ]
 
 
+message : Message -> Html Msg
+message msg =
+    li [ class "field" ]
+        [ div [ class "level" ]
+            [ div [ class "level-left" ]
+                [ div [ class "level-item" ]
+                    [ div [ class "field" ]
+                        [ div [ class "subtitle is-5" ] [ text msg.author.username, text " - ", text (toString msg.score) ]
+                        , div [] [ text msg.text ]
+                        ]
+                    ]
+                ]
+            , div [ class "level-right" ]
+                [ div [ class "level-item" ]
+                    [ button [ class "button is-success", onClick (ClearQuestion msg.id) ] [ text "Done" ]
+                    ]
+                ]
+            ]
+        ]
+
+
 room : Model -> Html Msg
 room model =
-    div []
-        [ p [] [ text model.currentRoom.roomId ] ]
+    p []
+        [ h1 [ class "title has-text-centered " ] [ text "Room: ", text model.currentRoom.roomId ]
+        , ul []
+            (List.map
+                message
+                model.currentRoom.messages
+            )
+        ]
 
 
 
@@ -114,6 +145,11 @@ sendRoomId roomId =
     WebSocket.send "ws://echo.websocket.org" roomId
 
 
+clearQuestion : String -> Cmd msg
+clearQuestion questionId =
+    WebSocket.send "ws://echo.websocket.org" questionId
+
+
 createDummyRoom : String -> Msg
 createDummyRoom roomId =
     IncomingMessage
@@ -124,7 +160,9 @@ createDummyRoom roomId =
 
 createDummyMessage : Message
 createDummyMessage =
-    { author = { username = "DummyMan" }
+    { id = "id"
+    , author = { username = "DummyMan" }
     , text = "DummyText"
+    , score = 5
     , timestamp = 1532358334463
     }

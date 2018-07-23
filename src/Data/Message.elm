@@ -4,7 +4,9 @@ import Data.Author exposing (Author)
 
 
 type alias Message =
-    { author : Author
+    { id : String
+    , author : Author
     , text : String
+    , score : Int
     , timestamp : Int
     }

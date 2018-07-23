@@ -1,0 +1,22 @@
+type Room @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type User @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  email: String! @isUnique
+}
+
+type Message @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  userId: String!
+  roomId: String!
+  text: String!
+  upvotes: Int!
+  downvotes: Int!
+}

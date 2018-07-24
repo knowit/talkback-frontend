@@ -1,32 +1,25 @@
 module Main exposing (..)
 
-import Models exposing (Room, Message, User, Route)
+import Models exposing (..)
 import Navigation exposing (Location)
 import Routing exposing (extractRoute)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (..)
 import WebSocket
+import Update.Update as Update
+import Views.AdminView.AdminView as AdminView
+import Views.UserView.UserView as UserView
+import Views.NotFoundView as NotFoundView
 
 
----- MODEL ----
-
-
-type alias Model =
-    { currentRoom : Maybe Room
-    , inputId : String
-    , messages : List Message
-    , currentRoute : Route
-    }
-
-
-initialModel : Route -> Model
-initialModel route =
-    { currentRoom = Nothing
-    , inputId = ""
-    , messages = []
-    , currentRoute = route
-    }
+main : Program Never Model Msg
+main =
+    Navigation.program OnLocationChange
+        { view = view
+        , init = init
+        , update = Update.update
+        , subscriptions = subscriptions
+        }
 
 
 init : Location -> ( Model, Cmd Msg )
@@ -38,43 +31,44 @@ init location =
         ( initialModel currentRoute, Cmd.none )
 
 
+view : Model -> Html Msg
+view model =
+    div [ class "section" ]
+        [ div [ class "container" ]
+            [ case model.currentRoute of
+                RootRoute ->
+                    startButtons
 
----- UPDATE ----
+                AdminRoute ->
+                    AdminView.view model
+
+                UserRoute ->
+                    UserView.view model
+
+                AdminRoomRoute roomId ->
+                    div [ class "subtitle" ] [ text "Admin room: ", text (toString roomId) ]
+
+                UserRoomRoute roomId ->
+                    div [ class "subtitle" ] [ text "User room: ", text (toString roomId) ]
+
+                NotFoundRoute ->
+                    NotFoundView.view
+            ]
+        ]
 
 
-type Msg
-    = NoOp
-    | InputChange String
-    | SubmitRoomId
-    | IncomingMessage (Maybe Room)
-    | ClearQuestion String
-    | OnLocationChange Location
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        OnLocationChange location ->
-            let
-                newRoute =
-                    extractRoute location
-            in
-                ( { model | currentRoute = newRoute }, Cmd.none )
-
-        InputChange roomId ->
-            ( { model | inputId = roomId }, Cmd.none )
-
-        SubmitRoomId ->
-            ( model, sendRoomId model.inputId )
-
-        IncomingMessage result ->
-            ( { model | currentRoom = result }, Cmd.none )
-
-        ClearQuestion questionId ->
-            ( model, clearQuestion questionId )
-
-        NoOp ->
-            ( model, Cmd.none )
+startButtons : Html msg
+startButtons =
+    div []
+        [ div [ class "field" ]
+            [ a [ class "button is-info", href "/user" ]
+                [ span [ class "icon" ] [ i [ class "fas fa-comments" ] [] ], span [] [ text "User" ] ]
+            ]
+        , p [ class "field" ]
+            [ a [ class "button is-link", href "/admin" ]
+                [ span [ class "icon" ] [ i [ class "fas fa-chalkboard-teacher" ] [] ], span [] [ text "Admin" ] ]
+            ]
+        ]
 
 
 subscriptions : Model -> Sub Msg
@@ -83,91 +77,7 @@ subscriptions model =
 
 
 
----- VIEW ----
-
-
-view : Model -> Html Msg
-view model =
-    div [ class "section" ]
-        [ div [ class "container" ]
-            [ inputGroup model
-            , case model.currentRoom of
-                Just room ->
-                    viewRoom room
-
-                Nothing ->
-                    div [] []
-            ]
-        ]
-
-
-inputGroup : Model -> Html Msg
-inputGroup model =
-    div [ class "field has-icons-left has-addons has-addons-centered" ]
-        [ p [ class "control" ]
-            [ button [ class "button is-warning is-static" ] [ text "#" ] ]
-        , p [ class "control" ]
-            [ input [ class "input", type_ "text", placeholder "Room ID", onInput InputChange ] [] ]
-        , p [ class "control" ]
-            [ button [ class "button is-info", onClick SubmitRoomId ] [ text "Join" ] ]
-        ]
-
-
-viewRoom : Room -> Html Msg
-viewRoom room =
-    p []
-        [ h1 [ class "title has-text-centered " ] [ text "Room: ", text room.id ]
-        , ul []
-            (List.map
-                message
-                room.messages
-            )
-        ]
-
-
-message : Message -> Html Msg
-message msg =
-    li [ class "field" ]
-        [ div [ class "level" ]
-            [ div [ class "level-left" ]
-                [ div [ class "level-item" ]
-                    [ div [ class "field" ]
-                        [ div [ class "subtitle is-5" ] [ text msg.author.email, text " - ", text (toString msg.score) ]
-                        , div [] [ text msg.text ]
-                        ]
-                    ]
-                ]
-            , div [ class "level-right" ]
-                [ div [ class "level-item" ]
-                    [ button [ class "button is-success", onClick (ClearQuestion msg.id) ] [ text "Done" ]
-                    ]
-                ]
-            ]
-        ]
-
-
-
----- PROGRAM ----
-
-
-main : Program Never Model Msg
-main =
-    Navigation.program OnLocationChange
-        { view = view
-        , init = init
-        , update = update
-        , subscriptions = subscriptions
-        }
-
-
-sendRoomId : String -> Cmd msg
-sendRoomId roomId =
-    WebSocket.send "ws://echo.websocket.org" roomId
-
-
-clearQuestion : String -> Cmd msg
-clearQuestion questionId =
-    WebSocket.send "ws://echo.websocket.org" questionId
+---- DUMMY DATA ----
 
 
 createDummyRoom : String -> Msg

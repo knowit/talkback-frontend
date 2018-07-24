@@ -1,5 +1,42 @@
 module Models exposing (..)
 
+import Navigation exposing (Location)
+
+
+type Msg
+    = NoOp
+    | InputChange String
+    | SubmitRoomId
+    | IncomingMessage (Maybe Room)
+    | ClearQuestion String
+    | OnLocationChange Location
+
+
+type alias Model =
+    { currentRoom : Maybe Room
+    , inputId : String
+    , messages : List Message
+    , currentRoute : Route
+    }
+
+
+initialModel : Route -> Model
+initialModel route =
+    { currentRoom = Nothing
+    , inputId = ""
+    , messages = []
+    , currentRoute = route
+    }
+
+
+type Route
+    = RootRoute
+    | AdminRoute
+    | UserRoute
+    | AdminRoomRoute Int
+    | UserRoomRoute Int
+    | NotFoundRoute
+
 
 type alias User =
     { id : String
@@ -26,12 +63,3 @@ type alias Room =
     , updatedAt : Int
     , messages : List Message
     }
-
-
-type Route
-    = RootRoute
-    | AdminRoute
-    | UserRoute
-    | AdminRoomRoute Int
-    | UserRoomRoute Int
-    | NotFoundRoute

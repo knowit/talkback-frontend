@@ -1,14 +1,16 @@
-module Decoders.GraphQL exposing (..)
+module GraphQLDecoders exposing (..)
 
 import Json.Decode exposing (..)
 import Data exposing (..)
 
 
+{-
 userDecoder : Json.Decode.Decoder Data.User
 userDecoder =
   Json.Decode.map2 Data.User
     (Json.Decode.at ["data", "User"] userInfoDecoder)
-    (Json.Decode.at ["data", "User"] "messages" <| Json.Decode.list messageDecoder)
+    (Json.Decode.at ["data", "User"] "messages" <| Json.Decode.list messageInfoDecoder)
+-}
 
 
 userInfoDecoder : Json.Decode.Decoder Data.GraphQLInfo.UserInfo
@@ -18,7 +20,6 @@ userInfoDecoder =
     (Json.Decode.field "createdAt" Json.Decode.int)
     (Json.Decode.field "updatedAt" Json.Decode.int)
     (Json.Decode.field "email" Json.Decode.string)
-
 
 messageDecoder : Json.Decode.Decoder Data.Message
 messageDecoder =

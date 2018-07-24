@@ -31,11 +31,13 @@ query messagesForUser($userId: ID!) {
   }
 }
 
-query message($messageId: ID!) {
-  Message(id: $messageId) {
-    ...messageInfo
-    author {
-      ...userInfo
+query messagesForRoom($roomId: ID!) {
+  Room(id: $roomId) {
+    messages {
+      ...messageInfo
+      author {
+        ...userInfo
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-module Data exposing (..)
+module Models exposing (..)
 
 
 type alias User =
@@ -26,3 +26,12 @@ type alias Room =
     , updatedAt : Int
     , messages : List Message
     }
+
+
+type Route
+    = RootRoute
+    | AdminRoute
+    | UserRoute
+    | AdminRoomRoute Int
+    | UserRoomRoute Int
+    | NotFoundRoute

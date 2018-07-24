@@ -1,6 +1,8 @@
 module Main exposing (..)
 
-import Data exposing (Room, Message, User)
+import Models exposing (Room, Message, User, Route)
+import Navigation exposing (Location)
+import Routing exposing (extractRoute)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -14,20 +16,26 @@ type alias Model =
     { currentRoom : Maybe Room
     , inputId : String
     , messages : List Message
+    , currentRoute : Route
     }
 
 
-initialModel : Model
-initialModel =
+initialModel : Route -> Model
+initialModel route =
     { currentRoom = Nothing
     , inputId = ""
     , messages = []
+    , currentRoute = route
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initialModel, Cmd.none )
+init : Location -> ( Model, Cmd Msg )
+init location =
+    let
+        currentRoute =
+            extractRoute location
+    in
+        ( initialModel currentRoute, Cmd.none )
 
 
 
@@ -40,11 +48,19 @@ type Msg
     | SubmitRoomId
     | IncomingMessage (Maybe Room)
     | ClearQuestion String
+    | OnLocationChange Location
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        OnLocationChange location ->
+            let
+                newRoute =
+                    extractRoute location
+            in
+                ( { model | currentRoute = newRoute }, Cmd.none )
+
         InputChange roomId ->
             ( { model | inputId = roomId }, Cmd.none )
 
@@ -136,7 +152,7 @@ message msg =
 
 main : Program Never Model Msg
 main =
-    Html.program
+    Navigation.program OnLocationChange
         { view = view
         , init = init
         , update = update

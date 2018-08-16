@@ -3,6 +3,7 @@ module Update.Update exposing (update)
 import WebSocket
 import Models exposing (..)
 import Routing exposing (..)
+import Navigation
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -15,11 +16,16 @@ update msg model =
             in
                 ( { model | currentRoute = newRoute }, Cmd.none )
 
-        InputChange roomId ->
-            ( { model | inputId = roomId }, Cmd.none )
+        InputChange inputType ->
+            case inputType of
+                JoinInput input ->
+                    ( { model | roomIdToJoin = input }, Cmd.none )
 
-        SubmitRoomId ->
-            ( model, sendRoomId model.inputId )
+                CreateInput input ->
+                    ( { model | newRoomName = input }, Cmd.none )
+
+        JoinRoom ->
+            ( model, Navigation.newUrl model.roomIdToJoin )
 
         IncomingMessage result ->
             ( { model | currentRoom = result }, Cmd.none )
@@ -28,6 +34,9 @@ update msg model =
             ( model, clearQuestion questionId )
 
         NoOp ->
+            ( model, Cmd.none )
+
+        _ ->
             ( model, Cmd.none )
 
 

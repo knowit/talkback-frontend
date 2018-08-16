@@ -5,6 +5,7 @@ import Navigation exposing (Location)
 import Routing exposing (extractRoute)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import WebSocket
 import Update.Update as Update
 import Views.AdminView.AdminView as AdminView
@@ -57,7 +58,7 @@ view model =
         ]
 
 
-startButtons : Html msg
+startButtons : Html Msg
 startButtons =
     div []
         [ div [ class "field" ]

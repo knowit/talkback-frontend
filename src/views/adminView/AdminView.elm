@@ -4,30 +4,21 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Models exposing (..)
+import Views.CommonViews.JoinRoomView as JoinRoomView
+import Views.AdminView.CreateRoomView as CreateRoomView
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ inputGroup model
+        [ JoinRoomView.view model
+        , CreateRoomView.view model
         , case model.currentRoom of
             Just room ->
                 viewRoom room
 
             Nothing ->
                 div [] []
-        ]
-
-
-inputGroup : Model -> Html Msg
-inputGroup model =
-    div [ class "field has-icons-left has-addons has-addons-centered" ]
-        [ p [ class "control" ]
-            [ button [ class "button is-warning is-static" ] [ text "#" ] ]
-        , p [ class "control" ]
-            [ input [ class "input", type_ "text", placeholder "Room ID", onInput InputChange ] [] ]
-        , p [ class "control" ]
-            [ button [ class "button is-info", onClick SubmitRoomId ] [ text "Join" ] ]
         ]
 
 

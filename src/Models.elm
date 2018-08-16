@@ -5,8 +5,9 @@ import Navigation exposing (Location)
 
 type Msg
     = NoOp
-    | InputChange String
-    | SubmitRoomId
+    | InputChange Input
+    | JoinRoom
+    | CreateRoom
     | IncomingMessage (Maybe Room)
     | ClearQuestion String
     | OnLocationChange Location
@@ -14,7 +15,8 @@ type Msg
 
 type alias Model =
     { currentRoom : Maybe Room
-    , inputId : String
+    , roomIdToJoin : String
+    , newRoomName : String
     , messages : List Message
     , currentRoute : Route
     }
@@ -23,7 +25,8 @@ type alias Model =
 initialModel : Route -> Model
 initialModel route =
     { currentRoom = Nothing
-    , inputId = ""
+    , roomIdToJoin = ""
+    , newRoomName = ""
     , messages = []
     , currentRoute = route
     }
@@ -63,3 +66,8 @@ type alias Room =
     , updatedAt : Int
     , messages : List Message
     }
+
+
+type Input
+    = JoinInput String
+    | CreateInput String

@@ -28,27 +28,27 @@ viewRoom room =
         [ h1 [ class "title has-text-centered " ] [ text "Room: ", text room.id ]
         , ul []
             (List.map
-                message
-                room.messages
+                viewQuestion
+                room.questions
             )
         ]
 
 
-message : Message -> Html Msg
-message msg =
+viewQuestion : Question -> Html Msg
+viewQuestion question =
     li [ class "field" ]
         [ div [ class "level" ]
             [ div [ class "level-left" ]
                 [ div [ class "level-item" ]
                     [ div [ class "field" ]
-                        [ div [ class "subtitle is-5" ] [ text msg.author.email, text " - ", text (toString msg.score) ]
-                        , div [] [ text msg.text ]
+                        [ div [ class "subtitle is-5" ] [ text question.author.email, text " - ", text (toString question.score) ]
+                        , div [] [ text question.text ]
                         ]
                     ]
                 ]
             , div [ class "level-right" ]
                 [ div [ class "level-item" ]
-                    [ button [ class "button is-success", onClick (ClearQuestion msg.id) ] [ text "Done" ]
+                    [ button [ class "button is-success", onClick (ClearQuestion question.id) ] [ text "Done" ]
                     ]
                 ]
             ]

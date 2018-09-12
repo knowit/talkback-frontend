@@ -88,7 +88,7 @@ createDummyRoom roomId =
             { id = roomId
             , createdAt = 1532358334463
             , updatedAt = 1532358334463
-            , messages = [ createDummyMessage, createDummyMessage ]
+            , questions = [ createDummyQuestion, createDummyQuestion ]
             }
         )
 
@@ -102,8 +102,8 @@ createDummyUser =
     }
 
 
-createDummyMessage : Message
-createDummyMessage =
+createDummyQuestion : Question
+createDummyQuestion =
     { id = "id"
     , createdAt = 1532358334463
     , text = "DummyText"

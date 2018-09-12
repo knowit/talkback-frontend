@@ -2,8 +2,8 @@
 query allRooms {
   allRooms {
     ...roomInfo
-    messages {
-      ...messageInfo
+    questions {
+      ...questionInfo
       author {
         ...userInfo
       }
@@ -14,8 +14,8 @@ query allRooms {
 query room($id: ID!) {
   Room(id: $id) {
     ...roomInfo
-    messages {
-      ...messageInfo
+    questions {
+      ...questionInfo
       author {
         ...userInfo
       }
@@ -23,18 +23,18 @@ query room($id: ID!) {
   }
 }
 
-query messagesForUser($userId: ID!) {
+query questionsForUser($userId: ID!) {
   User(id: $userId) {
-    messages {
-      ...messageInfo
+    questions {
+      ...questionInfo
     }
   }
 }
 
-query messagesForRoom($roomId: ID!) {
+query questionsForRoom($roomId: ID!) {
   Room(id: $roomId) {
-    messages {
-      ...messageInfo
+    questions {
+      ...questionInfo
       author {
         ...userInfo
       }
@@ -57,7 +57,7 @@ fragment userInfo on User {
   email
 }
 
-fragment messageInfo on Message {
+fragment Info on Question {
   id
   createdAt
   text

@@ -9,7 +9,7 @@ userDecoder : Json.Decode.Decoder Data.User
 userDecoder =
   Json.Decode.map2 Data.User
     (Json.Decode.at ["data", "User"] userInfoDecoder)
-    (Json.Decode.at ["data", "User"] "messages" <| Json.Decode.list messageInfoDecoder)
+    (Json.Decode.at ["data", "User"] "questions" <| Json.Decode.list questionInfoDecoder)
 -}
 
 
@@ -21,16 +21,16 @@ userInfoDecoder =
     (Json.Decode.field "updatedAt" Json.Decode.int)
     (Json.Decode.field "email" Json.Decode.string)
 
-messageDecoder : Json.Decode.Decoder Data.Message
-messageDecoder =
+questionDecoder : Json.Decode.Decoder Data.Question
+questionDecoder =
   Json.Decode.map2 Data.User
-    (Json.Decode.at ["data", "Message"] messageInfoDecoder)
-    (Json.Decode.at ["data", "Message"] "author" userInfoDecoder)
+    (Json.Decode.at ["data", "Question"] questionInfoDecoder)
+    (Json.Decode.at ["data", "Question"] "author" userInfoDecoder)
 
 
-messageInfoDecoder : Json.Decode.Decoder Data.GraphQLInfo.MessageInfo
-messageInfoDecoder =
-  Json.Decode.map5 Data.GraphQLInfo.MessageInfo
+questionInfoDecoder : Json.Decode.Decoder Data.GraphQLInfo.QuestionInfo
+questionInfoDecoder =
+  Json.Decode.map5 Data.GraphQLInfo.QuestionInfo
     (Json.Decode.field "id" Json.Decode.string)
     (Json.Decode.field "createdAt" Json.Decode.int)
     (Json.Decode.field "text" Json.Decode.string)
@@ -42,7 +42,7 @@ roomDecoder : Json.Decode.Decoder Data.Room
 roomDecoder =
   Json.Decode.map2 Data.Room
     (Json.Decode.at ["data", "Room"] roomInfoDecoder)
-    (Json.Decode.at ["data", "Room"] "messages" <| Json.Decode.List messageDecoder)
+    (Json.Decode.at ["data", "Room"] "questions" <| Json.Decode.List questionDecoder)
 
 
 roomInfoDecoder : Json.Decode.Decoder Data.GraphQLInfo.RoomInfo

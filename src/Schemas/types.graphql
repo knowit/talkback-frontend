@@ -2,7 +2,7 @@ type Room @model {
   id: ID! @isUnique
   createdAt: Int!
   updatedAt: Int!
-  messages: [Message]! @relation(name: "MessagesOnRoom")
+  questions: [Question]! @relation(name: "QuestionsOnRoom")
 }
 
 type User @model {
@@ -10,15 +10,15 @@ type User @model {
   createdAt: Int!
   updatedAt: Int!
   email: String! @isUnique
-  messages: [Message]! @relation(name: "MessagesOnUser")
+  questions: [Question]! @relation(name: "QuestionsOnUser")
 }
 
-type Message @model {
+type Question @model {
   id: ID! @isUnique
   createdAt: Int!
   text: String!
   upvotes: Int!
   downvotes: Int!
-  author: User! @relation(name: "MessagesOnUser")
-  room: Room! @relation(name: "MessagesOnRoom")
+  author: User! @relation(name: "QuestionsOnUser")
+  room: Room! @relation(name: "QuestionsOnRoom")
 }

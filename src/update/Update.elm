@@ -19,7 +19,7 @@ update msg model =
         InputChange inputType ->
             case inputType of
                 JoinInput input ->
-                    ( { model | roomIdToJoin = input }, Cmd.none )
+                    ( { model | roomIdToJoin = input }, sendRoomId input )
 
                 CreateInput input ->
                     ( { model | newRoomName = input }, Cmd.none )

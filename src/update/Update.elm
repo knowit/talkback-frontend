@@ -24,6 +24,9 @@ update msg model =
                 CreateInput input ->
                     ( { model | newRoomName = input }, Cmd.none )
 
+                QuestionInput input ->
+                    ( { model | newQuestion = input }, Cmd.none )
+
         JoinRoom ->
             ( model, Navigation.newUrl model.roomIdToJoin )
 

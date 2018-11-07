@@ -18,6 +18,7 @@ type alias Model =
     , roomIdToJoin : String
     , newRoomName : String
     , currentRoute : Route
+    , newQuestion : String
     }
 
 
@@ -27,6 +28,7 @@ initialModel route =
     , roomIdToJoin = ""
     , newRoomName = ""
     , currentRoute = route
+    , newQuestion = ""
     }
 
 
@@ -69,3 +71,4 @@ type alias Room =
 type Input
     = JoinInput String
     | CreateInput String
+    | QuestionInput String

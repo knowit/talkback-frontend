@@ -15,7 +15,7 @@
 
 
 # In the types.graphql you define your data schema
-types: ./types.graphql
+types: src/Schemas/types.graphql
 
 
 functions:
@@ -23,7 +23,7 @@ functions:
     handler:
       code: src/hello.js
     type: resolver
-    schema: src/hello.graphql
+    schema: src/Schemas/queries.graphql
 
 
 # Model/Relation permissions are used to limit the API access

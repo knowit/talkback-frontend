@@ -21,7 +21,7 @@ types: src/Schemas/types.graphql
 functions:
   hello:
     handler:
-      code: src/hello.js
+      code: src/ports/handleSimpleEvent.js
     type: resolver
     schema: src/Schemas/queries.graphql
 

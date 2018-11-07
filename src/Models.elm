@@ -17,7 +17,6 @@ type alias Model =
     { currentRoom : Maybe Room
     , roomIdToJoin : String
     , newRoomName : String
-    , questions : List Question
     , currentRoute : Route
     }
 
@@ -27,7 +26,6 @@ initialModel route =
     { currentRoom = Nothing
     , roomIdToJoin = ""
     , newRoomName = ""
-    , questions = []
     , currentRoute = route
     }
 
